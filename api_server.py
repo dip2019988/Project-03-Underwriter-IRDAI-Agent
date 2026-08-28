@@ -24,6 +24,8 @@ from services.redis_service import redis_service
 
 from services.memory_service import mem0_service
 
+from presidio_governance.anonymizer import presidio_anonymizer_service
+
 from utils.logger import logger
 
 
@@ -159,13 +161,20 @@ async def evaluate_underwriting(
         uuid.uuid4()
     )[:8]
 
-    cached_payload = (
+    sanitized_query, _ = (
+        presidio_anonymizer_service
+        .anonymize_and_map(
+            request.raw_query
+        )
+    )
 
+    cached_payload = (
         redis_service.get_cached_solution(
-            request.raw_query,
+            sanitized_query,
             customer_id
         )
     )
+
 
     if cached_payload:
 
@@ -283,6 +292,8 @@ async def evaluate_underwriting(
         "premium_quote":
             {},
 
+        "ulip_illustration": {},
+
         "risk_score":
             0,
 
@@ -366,14 +377,14 @@ async def evaluate_underwriting(
     ):
 
         redis_service.set_cached_solution(
-            request.raw_query,
+            final_state.get("sanitized_query",request.raw_query),
             customer_id,
             final_state
         )
 
         mem0_service.add_customer_memory(
             customer_id,
-            request.raw_query
+            final_state.get("sanitized_query", request.raw_query)
         )
 
     return UnderwritingResponse(

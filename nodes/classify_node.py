@@ -86,7 +86,7 @@ def classify_intent_node(
     response: IntentClassificationSchema = (
         openai_service.execute_prompt(
             system_prompt=system_prompt,
-            user_input=state["raw_query"],
+            user_input=state["sanitized_query"],
             output_schema=IntentClassificationSchema
         )
     )

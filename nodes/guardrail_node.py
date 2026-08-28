@@ -176,45 +176,36 @@ def output_guardrail_node(
     state: UnderwritingState
 ) -> dict:
 
-    """
-    Insurance Output Guardrail
-
-    Rehydrates PAN / customer data
-    after policy approval output.
-    """
-
     logger.info(
         "--- [GUARDRAIL] Output Rehydration ---"
-    )
-
-    solution = state.get(
-        "solution",
-        ""
-    )
-
-    token_map = state.get(
-        "presidio_token_map",
-        {}
     )
 
     final_solution = (
         presidio_rehydrator_service
         .rehydrate_text(
-            solution,
-            token_map
+            state.get(
+                "solution",
+                ""
+            ),
+            state.get(
+                "presidio_token_map",
+                {}
+            )
         )
     )
 
-    return {
+    updated_state = dict(state)
 
-        "solution":
-            final_solution,
+    updated_state["solution"] = (
+        final_solution
+    )
 
-        "visited_nodes": [
-            "output_guardrail_node"
-        ],
+    updated_state["visited_nodes"] = [
+        "output_guardrail_node"
+    ]
 
-        "execution_logs": [
-            "Proposal rehydrated"
-        ]
-    }
+    updated_state["execution_logs"] = [
+        "Proposal rehydrated"
+    ]
+
+    return updated_state

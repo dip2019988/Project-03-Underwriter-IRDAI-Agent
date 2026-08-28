@@ -94,6 +94,8 @@ def run_underwriting_workflow(
 
         "premium_quote": {},
 
+        "ulip_illustration": {},
+
         "risk_score": 0,
 
         "risk_category": "",
@@ -179,7 +181,7 @@ def run_underwriting_workflow(
     ):
 
         redis_service.set_cached_solution(
-            query,
+            final_state.get("sanitized_query", query),
             customer_id,
             final_state
         )
@@ -191,7 +193,7 @@ def run_underwriting_workflow(
 
         mem0_service.add_customer_memory(
             customer_id,
-            query
+            final_state.get("sanitized_query", query)
         )
 
     return final_state, False

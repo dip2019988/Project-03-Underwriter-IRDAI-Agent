@@ -1,0 +1,20 @@
+[
+  {
+    "customer_id": "CUST001",
+    "form16_income": 1800000,
+    "tax_paid": 265000,
+    "pan": "ABCDE1234F"
+  },
+  {
+    "customer_id": "CUST002",
+    "form16_income": 1200000,
+    "tax_paid": 145000,
+    "pan": "FGHIJ5678K"
+  },
+  {
+    "customer_id": "CUST003",
+    "form16_income": 2500000,
+    "tax_paid": 420000,
+    "pan": "LMNOP1234Q"
+  }
+]

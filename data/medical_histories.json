@@ -1,0 +1,37 @@
+[
+  {
+    "customer_id": "CUST001",
+    "smoker": true,
+    "alcohol": "Occasional",
+    "family_history": "Father underwent bypass surgery at age 52",
+    "bmi": 27.1
+  },
+  {
+    "customer_id": "CUST002",
+    "smoker": false,
+    "alcohol": "None",
+    "family_history": "Parental diabetes history",
+    "bmi": 22.4
+  },
+  {
+    "customer_id": "CUST003",
+    "smoker": false,
+    "alcohol": "Moderate",
+    "family_history": "No significant family history",
+    "bmi": 24.5
+  },
+  {
+    "customer_id": "CUST004",
+    "smoker": false,
+    "alcohol": "Occasional",
+    "medical_condition": "Asthma",
+    "bmi": 26.2
+  },
+  {
+    "customer_id": "CUST005",
+    "smoker": true,
+    "alcohol": "Frequent",
+    "medical_condition": "Hypertension",
+    "bmi": 31.8
+  }
+]

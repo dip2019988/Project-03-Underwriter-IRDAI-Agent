@@ -1,4 +1,5 @@
 from typing import Literal
+
 from graph.state import UnderwritingState
 from utils.logger import logger
 
@@ -11,7 +12,10 @@ def route_by_intent(
     "underwriting_node"
 ]:
 
-    intent = state.get("intent", "GENERAL")
+    intent = state.get(
+        "intent",
+        "GENERAL"
+    )
 
     logger.info(
         f"[ROUTER] Intent detected: {intent}"
@@ -42,13 +46,28 @@ def evaluate_confidence_route(
         0
     )
 
+    logger.info(
+        f"[ROUTER] Confidence Score: {confidence}"
+    )
+
+    # ----------------------------------
+    # High Confidence
+    # ----------------------------------
+
     if confidence >= 80:
+
+        logger.info(
+            "[ROUTER] Confidence threshold met."
+        )
+
         return "END"
 
-    if state.get(
-        "retry_count",
-        0
-    ) < 2:
-        return "solution_node"
+    # ----------------------------------
+    # Low Confidence
+    # ----------------------------------
+
+    logger.info(
+        "[ROUTER] Escalating to Human Review."
+    )
 
     return "human_approval_node"

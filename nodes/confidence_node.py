@@ -12,7 +12,7 @@ class ConfidenceRatingSchema(BaseModel):
     )
 
     reasoning: str = Field(
-        description="Reason for confidence score."
+        description="Explanation."
     )
 
 
@@ -21,77 +21,226 @@ def confidence_check_node(
 ) -> dict:
 
     """
-    Evaluates confidence of underwriting
-    recommendation and compliance.
+    Hybrid confidence engine.
+
+    Uses objective signals first,
+    then lets the LLM refine.
     """
 
     logger.info(
         "--- [NODE] Underwriting Confidence Assessor ---"
     )
 
+    score = 40
+    reasoning = []
+
+    # ----------------------------------
+    # Structured Profile Extraction
+    # ----------------------------------
+
+    customer_profile = state.get(
+        "customer_profile",
+        {}
+    )
+
+    financial_profile = state.get(
+        "financial_profile",
+        {}
+    )
+
+    medical_profile = state.get(
+        "medical_profile",
+        {}
+    )
+
+    if customer_profile.get("age"):
+        score += 10
+        reasoning.append(
+            "Age extracted"
+        )
+
+    if financial_profile.get(
+        "annual_income"
+    ):
+        score += 10
+        reasoning.append(
+            "Income extracted"
+        )
+
+    if financial_profile.get(
+        "requested_cover"
+    ):
+        score += 10
+        reasoning.append(
+            "Requested cover extracted"
+        )
+
+    # ----------------------------------
+    # MCP Results
+    # ----------------------------------
+
+    if state.get("hlv_result"):
+        score += 10
+        reasoning.append(
+            "HLV available"
+        )
+
+    if state.get("bmi_result"):
+        score += 5
+        reasoning.append(
+            "BMI available"
+        )
+
+    if state.get("premium_quote"):
+        score += 10
+        reasoning.append(
+            "Premium quote available"
+        )
+
+    # ----------------------------------
+    # KB/RAG
+    # ----------------------------------
+
+    retrieved_docs = state.get(
+        "retrieved_docs",
+        []
+    )
+
+    if retrieved_docs:
+        score += 10
+        reasoning.append(
+            f"{len(retrieved_docs)} KB docs retrieved"
+        )
+
+    # ----------------------------------
+    # Recommendation Quality
+    # ----------------------------------
+
+    recommendation = state.get(
+        "solution",
+        ""
+    )
+
+    if recommendation:
+
+        if len(recommendation) > 500:
+            score += 5
+
+        if (
+            "Decision"
+            in recommendation
+        ):
+            score += 5
+
+    # ----------------------------------
+    # Risk Category Present
+    # ----------------------------------
+
+    if state.get(
+        "risk_category"
+    ):
+        score += 5
+        reasoning.append(
+            "Risk category determined"
+        )
+
+    score = min(score, 95)
+
+    # ----------------------------------
+    # Optional LLM Assessment
+    # ----------------------------------
+
     system_prompt = """
-    You are an Insurance Quality Assurance Engine.
+    Review the underwriting recommendation.
 
-    Evaluate the underwriting recommendation.
+    Return:
 
-    Consider:
+    confidence_score:
+    between 0 and 100
 
-    1. Financial underwriting completeness.
-    2. Medical risk assessment completeness.
-    3. Lifestyle risk evaluation.
-    4. Use of retrieved regulatory documents.
-    5. IRDAI compliance.
-    6. Overall recommendation quality.
+    reasoning:
+    concise explanation
 
-    Return a confidence score
-    between 0 and 100.
+    Avoid major deviations from
+    the supplied base score.
     """
 
     user_input = f"""
-    Customer Query:
-    {state.get('raw_query', '')}
+Base Score:
+{score}
 
-    Recommendation:
-    {state.get('solution', '')}
+Recommendation:
+{recommendation}
 
-    Retrieved Documents:
-    {state.get('retrieved_docs', [])}
+Retrieved Docs:
+{retrieved_docs}
 
-    BMI:
-    {state.get('bmi_result', {})}
+HLV:
+{state.get("hlv_result", {})}
 
-    HLV:
-    {state.get('hlv_result', {})}
+BMI:
+{state.get("bmi_result", {})}
 
-    Premium:
-    {state.get('premium_quote', {})}
-    """
+Premium:
+{state.get("premium_quote", {})}
+"""
 
-    result: ConfidenceRatingSchema = (
-        openai_service.execute_prompt(
-            system_prompt=system_prompt,
-            user_input=user_input,
-            output_schema=ConfidenceRatingSchema
+    try:
+
+        llm_result: ConfidenceRatingSchema = (
+            openai_service.execute_prompt(
+                system_prompt=system_prompt,
+                user_input=user_input,
+                output_schema=ConfidenceRatingSchema
+            )
         )
-    )
+
+        final_score = int(
+            (
+                score * 0.8
+            ) +
+            (
+                llm_result.confidence_score * 0.2
+            )
+        )
+
+        final_score = min(
+            final_score,
+            95
+        )
+
+        final_reasoning = (
+            f"Objective Score={score}. "
+            f"{llm_result.reasoning}"
+        )
+
+    except Exception:
+
+        final_score = score
+
+        final_reasoning = (
+            ", ".join(reasoning)
+        )
 
     logger.info(
         f"Confidence: "
-        f"{result.confidence_score}% "
-        f"- {result.reasoning}"
+        f"{final_score}% - "
+        f"{final_reasoning}"
     )
 
     return {
 
         "confidence_score":
-            result.confidence_score,
+            final_score,
 
         "visited_nodes": [
             "confidence_check_node"
         ],
 
         "execution_logs": [
-            f"Confidence assessed: "
-            f"{result.confidence_score}%"
+            (
+                "Confidence assessed: "
+                f"{final_score}%"
+            )
         ]
     }

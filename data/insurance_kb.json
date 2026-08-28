@@ -1,18 +1,128 @@
 [
   {
-    "title": "IRDAI Section 45",
-    "content": "A life insurance policy cannot be questioned after three consecutive years from issuance except in cases of fraud."
+    "id": "IRDAI-001",
+    "category": "IRDAI_COMPLIANCE",
+    "title": "Section 45 Incontestability Rule",
+    "content": "Life insurance policies cannot normally be questioned after three years except in cases of fraud."
   },
   {
-    "title": "ULIP Disclosure",
-    "content": "ULIP illustrations must disclose both 4 percent and 8 percent gross return scenarios."
+    "id": "IRDAI-002",
+    "category": "IRDAI_COMPLIANCE",
+    "title": "Free Look Period",
+    "content": "Policyholders have a free-look period of 15 days or 30 days for electronic and distance mode policies."
   },
   {
+    "id": "IRDAI-003",
+    "category": "IRDAI_COMPLIANCE",
+    "title": "Anti Mis-selling Rule",
+    "content": "Advisors must not promise guaranteed returns on market linked insurance products."
+  },
+  {
+    "id": "IRDAI-004",
+    "category": "IRDAI_COMPLIANCE",
+    "title": "Mortality Charge Disclosure",
+    "content": "Mortality charges must be disclosed separately in illustrations and policy documents."
+  },
+  {
+    "id": "ULIP-001",
+    "category": "ULIP",
+    "title": "ULIP Illustration Guidelines",
+    "content": "ULIP benefit illustrations must display both 4 percent and 8 percent gross return scenarios."
+  },
+  {
+    "id": "ULIP-002",
+    "category": "ULIP",
+    "title": "ULIP Structure",
+    "content": "ULIPs combine life insurance protection with market linked investment options."
+  },
+  {
+    "id": "TERM-001",
+    "category": "TERM_PLAN",
+    "title": "Term Insurance Overview",
+    "content": "Term insurance provides pure life cover with no maturity benefit in most plans."
+  },
+  {
+    "id": "TERM-002",
+    "category": "TERM_PLAN",
     "title": "Smoker Classification",
-    "content": "Any tobacco consumption within the previous 12 months is treated as smoker category."
+    "content": "Any tobacco consumption during the previous twelve months is generally classified as smoker risk."
   },
   {
-    "title": "HLV Rule",
-    "content": "Applicants below age 35 may be eligible for up to 20 times annual income subject to underwriting guidelines."
+    "id": "TROP-001",
+    "category": "TROP",
+    "title": "Return of Premium Plan",
+    "content": "Return of Premium plans return eligible premiums upon survival at policy maturity while providing life cover during the policy term."
+  },
+  {
+    "id": "GIP-001",
+    "category": "GUARANTEED_INCOME",
+    "title": "Guaranteed Income Plan",
+    "content": "Guaranteed income plans provide predefined benefits subject to policy conditions."
+  },
+  {
+    "id": "HLV-001",
+    "category": "HLV",
+    "title": "HLV Age Multiplier Below 35",
+    "content": "Applicants below age thirty five may qualify for up to twenty times annual income based on underwriting guidelines."
+  },
+  {
+    "id": "HLV-002",
+    "category": "HLV",
+    "title": "HLV Age Multiplier 35 to 45",
+    "content": "Applicants aged thirty five to forty five may qualify for up to fifteen times annual income."
+  },
+  {
+    "id": "HLV-003",
+    "category": "HLV",
+    "title": "HLV Existing Cover Adjustment",
+    "content": "Existing life insurance cover may be considered when determining additional financial eligibility."
+  },
+  {
+    "id": "UW-001",
+    "category": "UNDERWRITING_RULES",
+    "title": "BMI Standard Classification",
+    "content": "BMI may be used to determine standard, loaded, or medical underwriting decisions."
+  },
+  {
+    "id": "UW-002",
+    "category": "UNDERWRITING_RULES",
+    "title": "High BMI Risk",
+    "content": "High BMI values may lead to premium loading or additional medical requirements."
+  },
+  {
+    "id": "MED-001",
+    "category": "MEDICAL_RULES",
+    "title": "Medical Examination Requirements",
+    "content": "Applicants with elevated risk factors may require Tele Medical Examination, Full Medical Report, ECG, HbA1c and Lipid Profile testing."
+  },
+  {
+    "id": "FAM-001",
+    "category": "FAMILY_HISTORY",
+    "title": "Cardiac Family History",
+    "content": "Parental history of bypass surgery or premature cardiac disease can increase underwriting scrutiny."
+  },
+  {
+    "id": "FAM-002",
+    "category": "FAMILY_HISTORY",
+    "title": "Diabetes Family History",
+    "content": "Family history of diabetes is considered during risk assessment."
+  },
+  {
+    "id": "OCC-001",
+    "category": "OCCUPATIONAL_RISK",
+    "title": "Mining Risk",
+    "content": "Mining occupations are generally considered high occupational risk."
+  },
+  {
+    "id": "OCC-002",
+    "category": "OCCUPATIONAL_RISK",
+    "title": "Commercial Aviation Risk",
+    "content": "Commercial aviation professions may require additional underwriting review."
+  },
+  {
+    "id": "OCC-003",
+    "category": "OCCUPATIONAL_RISK",
+    "title": "Offshore Drilling Risk",
+    "content": "Offshore drilling occupations may attract special underwriting requirements."
   }
 ]

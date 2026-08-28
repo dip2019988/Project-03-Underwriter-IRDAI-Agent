@@ -8,56 +8,91 @@ def mcp_execution_node(
 ) -> dict:
 
     """
-    Executes Insurance MCP Tools:
-    - BMI Calculator
-    - HLV Calculator
-    - Premium Calculator
+    Executes Insurance MCP Tools.
+
+    HEALTH_RISK
+        -> BMI
+
+    FINANCIAL_UNDERWRITING
+        -> HLV
+        -> Premium
+
+    LIFESTYLE_RISK
+        -> BMI (if available)
+        -> Premium
     """
 
     logger.info(
         "--- [NODE] Insurance MCP Tool Execution ---"
     )
 
-    intent = state.get("intent", "GENERAL")
+    intent = state.get(
+        "intent",
+        "GENERAL"
+    )
+
+    customer_profile = state.get(
+        "customer_profile",
+        {}
+    )
+
+    financial_profile = state.get(
+        "financial_profile",
+        {}
+    )
+
+    medical_profile = state.get(
+        "medical_profile",
+        {}
+    )
 
     visited = ["mcp_execution_node"]
 
+    bmi_result = {}
+    hlv_result = {}
+    premium_quote = {}
+
+    execution_logs = []
+
     # --------------------------------------------------
-    # HEALTH RISK -> BMI TOOL
+    # HEALTH RISK
     # --------------------------------------------------
 
     if intent == "HEALTH_RISK":
 
-        logger.info(
-            "[MCP NODE] Calling BMI Tool..."
+        height_cm = medical_profile.get(
+            "height_cm",
+            0
         )
 
-        result = mcp_remote_client.call_mcp_service(
-            service_key="bmi",
-            tool_name="calculate_bmi",
-            arguments={
-                "height_cm": state.get(
-                    "medical_profile",
-                    {}
-                ).get("height_cm", 170),
-
-                "weight_kg": state.get(
-                    "medical_profile",
-                    {}
-                ).get("weight_kg", 70)
-            }
+        weight_kg = medical_profile.get(
+            "weight_kg",
+            0
         )
 
-        return {
-            "bmi_result": result,
-            "visited_nodes": visited,
-            "execution_logs": [
+        if height_cm and weight_kg:
+
+            logger.info(
+                "[MCP NODE] Calling BMI Tool..."
+            )
+
+            bmi_result = (
+                mcp_remote_client.call_mcp_service(
+                    service_key="bmi",
+                    tool_name="calculate_bmi",
+                    arguments={
+                        "height_cm": height_cm,
+                        "weight_kg": weight_kg
+                    }
+                )
+            )
+
+            execution_logs.append(
                 "BMI MCP Tool Executed"
-            ]
-        }
+            )
 
     # --------------------------------------------------
-    # FINANCIAL UNDERWRITING -> HLV TOOL
+    # FINANCIAL UNDERWRITING
     # --------------------------------------------------
 
     elif intent == "FINANCIAL_UNDERWRITING":
@@ -66,102 +101,165 @@ def mcp_execution_node(
             "[MCP NODE] Calling HLV Tool..."
         )
 
-        result = mcp_remote_client.call_mcp_service(
-            service_key="hlv",
-            tool_name="calculate_hlv",
-            arguments={
-                "annual_income":
-                    state.get(
-                        "financial_profile",
-                        {}
-                    ).get(
-                        "annual_income",
-                        1000000
-                    ),
+        hlv_result = (
+            mcp_remote_client.call_mcp_service(
+                service_key="hlv",
+                tool_name="calculate_hlv",
+                arguments={
+                    "annual_income":
+                        financial_profile.get(
+                            "annual_income",
+                            0
+                        ),
 
-                "age":
-                    state.get(
-                        "customer_profile",
-                        {}
-                    ).get(
-                        "age",
-                        30
-                    ),
+                    "age":
+                        customer_profile.get(
+                            "age",
+                            0
+                        ),
 
-                "existing_cover":
-                    state.get(
-                        "financial_profile",
-                        {}
-                    ).get(
-                        "existing_cover",
-                        0
-                    )
-            }
+                    "existing_cover":
+                        financial_profile.get(
+                            "existing_cover",
+                            0
+                        )
+                }
+            )
         )
 
-        return {
-            "hlv_result": result,
-            "visited_nodes": visited,
-            "execution_logs": [
-                "HLV MCP Tool Executed"
-            ]
-        }
-
-    # --------------------------------------------------
-    # LIFESTYLE RISK -> PREMIUM TOOL
-    # --------------------------------------------------
-
-    elif intent == "LIFESTYLE_RISK":
+        execution_logs.append(
+            "HLV MCP Tool Executed"
+        )
 
         logger.info(
             "[MCP NODE] Calling Premium Tool..."
         )
 
-        result = mcp_remote_client.call_mcp_service(
-            service_key="premium",
-            tool_name="calculate_premium",
-            arguments={
+        premium_quote = (
+            mcp_remote_client.call_mcp_service(
+                service_key="premium",
+                tool_name="calculate_premium",
+                arguments={
+                    "age":
+                        customer_profile.get(
+                            "age",
+                            0
+                        ),
 
-                "age":
-                    state.get(
-                        "customer_profile",
-                        {}
-                    ).get(
-                        "age",
-                        30
-                    ),
+                    "sum_assured":
+                        financial_profile.get(
+                            "requested_cover",
+                            0
+                        ),
 
-                "sum_assured":
-                    state.get(
-                        "financial_profile",
-                        {}
-                    ).get(
-                        "requested_cover",
-                        10000000
-                    ),
-
-                "smoker":
-                    state.get(
-                        "medical_profile",
-                        {}
-                    ).get(
-                        "smoker",
-                        False
-                    )
-            }
+                    "smoker":
+                        medical_profile.get(
+                            "smoker",
+                            False
+                        )
+                }
+            )
         )
 
-        return {
-            "premium_quote": result,
-            "visited_nodes": visited,
-            "execution_logs": [
-                "Premium MCP Tool Executed"
-            ]
-        }
+        execution_logs.append(
+            "Premium MCP Tool Executed"
+        )
+
+    # --------------------------------------------------
+    # LIFESTYLE RISK
+    # --------------------------------------------------
+
+    elif intent == "LIFESTYLE_RISK":
+
+        height_cm = medical_profile.get(
+            "height_cm",
+            0
+        )
+
+        weight_kg = medical_profile.get(
+            "weight_kg",
+            0
+        )
+
+        if height_cm and weight_kg:
+
+            logger.info(
+                "[MCP NODE] Calling BMI Tool..."
+            )
+
+            bmi_result = (
+                mcp_remote_client.call_mcp_service(
+                    service_key="bmi",
+                    tool_name="calculate_bmi",
+                    arguments={
+                        "height_cm": height_cm,
+                        "weight_kg": weight_kg
+                    }
+                )
+            )
+
+            execution_logs.append(
+                "BMI MCP Tool Executed"
+            )
+
+        logger.info(
+            "[MCP NODE] Calling Premium Tool..."
+        )
+
+        premium_quote = (
+            mcp_remote_client.call_mcp_service(
+                service_key="premium",
+                tool_name="calculate_premium",
+                arguments={
+                    "age":
+                        customer_profile.get(
+                            "age",
+                            0
+                        ),
+
+                    "sum_assured":
+                        financial_profile.get(
+                            "requested_cover",
+                            0
+                        ),
+
+                    "smoker":
+                        medical_profile.get(
+                            "smoker",
+                            False
+                        )
+                }
+            )
+        )
+
+        execution_logs.append(
+            "Premium MCP Tool Executed"
+        )
+
+    # --------------------------------------------------
+    # DEFAULT
+    # --------------------------------------------------
+
+    if not execution_logs:
+
+        execution_logs.append(
+            "No MCP Tool Required"
+        )
 
     return {
-        "visited_nodes": visited,
-        "execution_logs": [
-            "No MCP tool required"
-        ]
+
+        "bmi_result":
+            bmi_result,
+
+        "hlv_result":
+            hlv_result,
+
+        "premium_quote":
+            premium_quote,
+
+        "visited_nodes":
+            visited,
+
+        "execution_logs":
+            execution_logs
     }

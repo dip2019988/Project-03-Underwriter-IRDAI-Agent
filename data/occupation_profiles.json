@@ -1,0 +1,22 @@
+[
+  {
+    "customer_id": "CUST001",
+    "occupation": "Software Engineer",
+    "risk": "STANDARD"
+  },
+  {
+    "customer_id": "CUST003",
+    "occupation": "Commercial Pilot",
+    "risk": "HIGH"
+  },
+  {
+    "customer_id": "CUST004",
+    "occupation": "Mining Engineer",
+    "risk": "HIGH"
+  },
+  {
+    "customer_id": "CUST005",
+    "occupation": "Offshore Drilling Supervisor",
+    "risk": "VERY_HIGH"
+  }
+]

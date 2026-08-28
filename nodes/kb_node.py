@@ -1,8 +1,43 @@
 import json
+import re
 
 from graph.state import UnderwritingState
 from config.settings import settings
 from utils.logger import logger
+
+
+def tokenize(text: str) -> set:
+
+    text = text.lower()
+
+    words = re.findall(
+        r"\b[a-zA-Z0-9]+\b",
+        text
+    )
+
+    stop_words = {
+        "the",
+        "and",
+        "or",
+        "is",
+        "are",
+        "a",
+        "an",
+        "my",
+        "i",
+        "me",
+        "want",
+        "need",
+        "for",
+        "with",
+        "of",
+        "to"
+    }
+
+    return {
+        w for w in words
+        if w not in stop_words
+    }
 
 
 def fallback_kb_node(
@@ -10,13 +45,14 @@ def fallback_kb_node(
 ) -> dict:
 
     """
-    Insurance Regulatory and Product RAG Node
+    Insurance Regulatory RAG Node
 
-    Loads:
+    Retrieves:
     - IRDAI Regulations
-    - Term Plan Rules
-    - ULIP Rules
     - Underwriting Guidelines
+    - HLV Rules
+    - Smoking Rules
+    - Product Information
     """
 
     logger.info(
@@ -37,33 +73,94 @@ def fallback_kb_node(
 
     query = state.get(
         "sanitized_query",
-        ""
-    ).lower()
+        state.get(
+            "raw_query",
+            ""
+        )
+    )
 
-    matched_docs = []
+    query_tokens = tokenize(query)
+
+    scored_documents = []
 
     for doc in docs:
 
         content = doc.get(
             "content",
             ""
-        ).lower()
+        )
 
-        if query in content:
-            matched_docs.append(doc)
+        title = doc.get(
+            "title",
+            ""
+        )
+
+        combined_text = (
+            f"{title} {content}"
+        )
+
+        doc_tokens = tokenize(
+            combined_text
+        )
+
+        overlap = len(
+            query_tokens.intersection(
+                doc_tokens
+            )
+        )
+
+        if overlap > 0:
+
+            scored_documents.append(
+                (
+                    overlap,
+                    doc
+                )
+            )
+
+    scored_documents.sort(
+        key=lambda x: x[0],
+        reverse=True
+    )
+
+    matched_docs = [
+        doc
+        for _, doc
+        in scored_documents[:5]
+    ]
+
+    # --------------------------------------------------
+    # Regulatory Fallback
+    # --------------------------------------------------
 
     if not matched_docs:
-        matched_docs = docs[:3]
+
+        logger.warning(
+            "[RAG] No keyword match. "
+            "Returning top regulatory docs."
+        )
+
+        matched_docs = docs[:5]
+
+    logger.info(
+        f"[RAG] Retrieved "
+        f"{len(matched_docs)} documents."
+    )
 
     return {
 
-        "retrieved_docs": matched_docs,
+        "retrieved_docs":
+            matched_docs,
 
         "visited_nodes": [
             "fallback_kb_node"
         ],
 
         "execution_logs": [
-            "Insurance RAG lookup completed"
+            (
+                f"Retrieved "
+                f"{len(matched_docs)} "
+                "insurance documents"
+            )
         ]
     }

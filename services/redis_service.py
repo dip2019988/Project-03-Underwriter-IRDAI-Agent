@@ -47,21 +47,41 @@ class RedisCacheService:
         logger.info("[REDIS] Cache MISS.")
         return None
 
-    def set_cached_solution(self, query: str, user_id: str, payload: Dict[str, Any]):
+    def set_cached_solution(
+        self,
+        query: str,
+        user_id: str,
+        payload: Dict[str, Any]
+    ):
         """Caches successful underwriting recommendations in Redis."""
+
         if not self.is_connected:
             return
 
         try:
-            key = self._generate_key(query, user_id)
-            self.client.setex(
-                key,
-                settings.REDIS_CACHE_TTL,
-                json.dumps(payload)
+
+            key = self._generate_key(
+                query,
+                user_id
             )
-            logger.info(f"[REDIS] Cached solution under key: {key} (TTL: {settings.REDIS_CACHE_TTL}s)")
+
+            self.client.set(
+                key,
+                json.dumps(payload),
+                ex=settings.REDIS_CACHE_TTL
+            )
+
+            logger.info(
+                f"[REDIS] Cached solution under key: "
+                f"{key} "
+                f"(TTL: {settings.REDIS_CACHE_TTL}s)"
+            )
+
         except Exception as e:
-            logger.error(f"[REDIS] Error writing to cache: {str(e)}")
+
+            logger.error(
+                f"[REDIS] Error writing to cache: {str(e)}"
+            )
 
 
 redis_service = RedisCacheService()

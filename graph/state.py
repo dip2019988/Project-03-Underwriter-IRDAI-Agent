@@ -46,15 +46,23 @@ class UnderwritingState(TypedDict):
     hlv_result: Dict[str, Any]
     premium_quote: Dict[str, Any]
 
+    ulip_illustration: Dict[str, Any]
+
     # Risk Assessment
 
     risk_score: int
     risk_category: str
 
+    occupational_risk: str
+    family_history_risk: str
+    follow_up_questions: List[str]
+
     # Recommendation
 
     solution: str
     underwriting_recommendation: str
+    underwriting_decision: str
+    proposal_json: Dict[str, Any]
 
 
     # Guardrails

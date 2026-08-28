@@ -20,27 +20,10 @@ class PolicyCheckSchema(BaseModel):
 
 
 class PolicyEnforcer:
-    """
-    IRDAI Compliance Guardrail
-
-    Blocks:
-    - Guaranteed return claims
-    - Non-disclosure advice
-    - Insurance fraud
-    - Fake documentation advice
-
-    Allows:
-    - Honest smoking disclosures
-    - Medical disclosures
-    - Insurance product questions
-    - Financial underwriting questions
-    """
 
     BLOCKED_PHRASES = [
 
-        # ----------------------------------
         # Guaranteed Returns
-        # ----------------------------------
 
         "guaranteed returns",
         "guaranteed market returns",
@@ -49,11 +32,12 @@ class PolicyEnforcer:
         "risk free ulip",
         "guaranteed profit",
 
-        # ----------------------------------
-        # Concealment / Non-Disclosure
-        # ----------------------------------
+        # Non Disclosure
 
         "hide smoking history",
+        "hide smoking habit",
+        "hide my smoking habit",
+
         "hide medical history",
         "hide tobacco usage",
         "hide health condition",
@@ -65,14 +49,13 @@ class PolicyEnforcer:
         "do not disclose medical condition",
 
         "conceal smoking",
+        "conceal smoking habit",
         "conceal medical history",
 
         "under report smoking",
         "underreport smoking",
 
-        # ----------------------------------
-        # Fraudulent Documents
-        # ----------------------------------
+        # Fraud
 
         "fake medical records",
         "fake income proof",
@@ -80,13 +63,31 @@ class PolicyEnforcer:
         "fake form 16",
         "fake form16",
 
-        # ----------------------------------
-        # Insurance Fraud
-        # ----------------------------------
-
         "insurance fraud",
         "forge medical records",
         "forge income proof"
+    ]
+
+    FRAUD_PATTERNS = [
+
+        "can i hide",
+        "should i hide",
+
+        "can i conceal",
+        "should i conceal",
+
+        "avoid disclosing",
+        "avoid disclosure",
+
+        "not disclose",
+
+        "without disclosing",
+
+        "how do i hide",
+        "how can i hide",
+
+        "how do i conceal",
+        "how can i conceal"
     ]
 
     SAFE_DISCLOSURE_PHRASES = [
@@ -94,7 +95,6 @@ class PolicyEnforcer:
         "i smoke",
         "i occasionally smoke",
         "i am a smoker",
-        "smoker",
 
         "tobacco user",
         "i use tobacco",
@@ -127,25 +127,7 @@ class PolicyEnforcer:
         query_lower = query.lower().strip()
 
         # ----------------------------------
-        # Allow Honest Disclosures
-        # ----------------------------------
-
-        for phrase in self.SAFE_DISCLOSURE_PHRASES:
-
-            if phrase in query_lower:
-
-                logger.info(
-                    f"[IRDAI GUARDRAIL] "
-                    f"Allowed disclosure detected: {phrase}"
-                )
-
-                return PolicyCheckSchema(
-                    is_compliant=True,
-                    policy_violation_reason=""
-                )
-
-        # ----------------------------------
-        # Block Policy Violations
+        # BLOCK FIRST
         # ----------------------------------
 
         for phrase in self.BLOCKED_PHRASES:
@@ -165,7 +147,69 @@ class PolicyEnforcer:
                 )
 
         # ----------------------------------
-        # Default Allow
+        # Fraud Intent Patterns
+        # ----------------------------------
+
+        smoking_keywords = [
+            "smoking",
+            "smoker",
+            "tobacco"
+        ]
+
+        medical_keywords = [
+            "medical",
+            "health condition",
+            "medical history"
+        ]
+
+        for pattern in self.FRAUD_PATTERNS:
+
+            if pattern in query_lower:
+
+                for keyword in (
+                    smoking_keywords
+                    + medical_keywords
+                ):
+
+                    if keyword in query_lower:
+
+                        reason = (
+                            f"Attempt to conceal "
+                            f"{keyword}"
+                        )
+
+                        logger.warning(
+                            f"[IRDAI GUARDRAIL] "
+                            f"{reason}"
+                        )
+
+                        return PolicyCheckSchema(
+                            is_compliant=False,
+                            policy_violation_reason=
+                            reason
+                        )
+
+        # ----------------------------------
+        # Honest Disclosure
+        # ----------------------------------
+
+        for phrase in self.SAFE_DISCLOSURE_PHRASES:
+
+            if phrase in query_lower:
+
+                logger.info(
+                    f"[IRDAI GUARDRAIL] "
+                    f"Allowed disclosure detected: "
+                    f"{phrase}"
+                )
+
+                return PolicyCheckSchema(
+                    is_compliant=True,
+                    policy_violation_reason=""
+                )
+
+        # ----------------------------------
+        # Allow Normal Queries
         # ----------------------------------
 
         return PolicyCheckSchema(

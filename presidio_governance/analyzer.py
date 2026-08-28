@@ -76,7 +76,7 @@ class InsurancePresidioAnalyzer:
 
         bank_pattern = Pattern(
             name="bank_account_pattern",
-            regex=r"\b\d{9,18}\b",
+            regex=r"\b\d{11,18}\b",
             score=0.80
         )
 
@@ -93,6 +93,35 @@ class InsurancePresidioAnalyzer:
 
         self.analyzer.registry.add_recognizer(
             bank_recognizer
+        )
+
+        # ----------------------------------
+        # Aadhaar
+        # Example:
+        # 1234-5678-9012
+        # 1234 5678 9012
+        # 123456789012
+        # ----------------------------------
+
+        aadhaar_pattern = Pattern(
+            name="aadhaar_pattern",
+            regex=r"\b\d{4}[- ]?\d{4}[- ]?\d{4}\b",
+            score=0.95
+        )
+
+        aadhaar_recognizer = PatternRecognizer(
+            supported_entity="AADHAAR_NUMBER",
+            patterns=[aadhaar_pattern],
+            context=[
+                "aadhaar",
+                "aadhar",
+                "uid",
+                "uidai"
+            ]
+        )
+
+        self.analyzer.registry.add_recognizer(
+            aadhaar_recognizer
         )
 
         logger.info(
@@ -119,6 +148,7 @@ class InsurancePresidioAnalyzer:
                 "PHONE_NUMBER",
 
                 "PAN_NUMBER",
+                "AADHAAR_NUMBER",
                 "IFSC_CODE",
                 "BANK_ACCOUNT",
 

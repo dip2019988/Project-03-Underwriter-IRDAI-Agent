@@ -1,0 +1,42 @@
+[
+  {
+    "customer_id": "CUST001",
+    "name": "John Smith",
+    "age": 34,
+    "annual_income": 1800000,
+    "existing_cover": 5000000,
+    "dependents": 2
+  },
+  {
+    "customer_id": "CUST002",
+    "name": "Jane Doe",
+    "age": 29,
+    "annual_income": 1200000,
+    "existing_cover": 2000000,
+    "dependents": 1
+  },
+  {
+    "customer_id": "CUST003",
+    "name": "Raj Sharma",
+    "age": 42,
+    "annual_income": 2500000,
+    "existing_cover": 10000000,
+    "dependents": 3
+  },
+  {
+    "customer_id": "CUST004",
+    "name": "Anita Patel",
+    "age": 31,
+    "annual_income": 1600000,
+    "existing_cover": 0,
+    "dependents": 2
+  },
+  {
+    "customer_id": "CUST005",
+    "name": "Vikram Singh",
+    "age": 48,
+    "annual_income": 3200000,
+    "existing_cover": 15000000,
+    "dependents": 4
+  }
+]
