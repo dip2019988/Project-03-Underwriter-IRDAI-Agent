@@ -1,0 +1,83 @@
+.
+├── api_server.py
+├── app.py
+├── config
+│   ├── __init__.py
+│   └── settings.py
+├── data
+│   ├── customer_profiles.json
+│   ├── generate_docs.py
+│   ├── insurance_kb.json
+│   ├── medical_histories.json
+│   ├── occupation_profiles.json
+│   └── salary_statements.json
+├── folder-structure.txt
+├── graph
+│   ├── graph_builder.py
+│   ├── __init__.py
+│   ├── router.py
+│   └── state.py
+├── guardrails
+│   ├── __init__.py
+│   ├── injection_detector.py
+│   ├── pii_sanitizer.py
+│   ├── policy_enforcer.py
+│   └── schema_validator.py
+├── Insurance Underwriter Agent.pdf
+├── mcp_services
+│   ├── bmi_service.py
+│   ├── hlv_service.py
+│   ├── __init__.py
+│   └── premium_service.py
+├── nodes
+│   ├── auth_node.py
+│   ├── classify_node.py
+│   ├── confidence_node.py
+│   ├── guardrail_node.py
+│   ├── human_node.py
+│   ├── __init__.py
+│   ├── kb_node.py
+│   ├── knowledge_node.py
+│   ├── mcp_node.py
+│   ├── medical_followup_node.py
+│   ├── profile_extraction_node.py
+│   ├── risk_assessment_node.py
+│   └── solution_node.py
+├── presidio_governance
+│   ├── analyzer.py
+│   ├── anonymizer.py
+│   ├── __init__.py
+│   ├── pan_recognizer.py
+│   └── rehydrator.py
+├── pytest.ini
+├── README.md
+├── requirements.txt
+├── schemas
+│   ├── api_schemas.py
+│   └── __init__.py
+├── security
+│   ├── auth.py
+│   ├── __init__.py
+│   └── rbac.py
+├── services
+│   ├── __init__.py
+│   ├── mcp_client.py
+│   ├── memory_service.py
+│   ├── openai_service.py
+│   ├── redis_service.py
+│   └── vector_store_service.py
+├── streamlit_app.py
+├── tests
+│   ├── conftest.py
+│   ├── test_bmi_tool.py
+│   ├── test_guardrails.py
+│   ├── test_hlv_calculator.py
+│   ├── test_intent_classifier.py
+│   ├── test_memory_flow.py
+│   ├── test_presidio.py
+│   └── test_ulip_illustrations.py
+└── utils
+    ├── __init__.py
+    └── logger.py
+
+12 directories, 68 files
