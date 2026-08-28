@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-
 app = FastAPI(
     title="Premium MCP Service",
     version="1.0.0"

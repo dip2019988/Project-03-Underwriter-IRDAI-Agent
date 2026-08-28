@@ -1,25 +1,9 @@
 from graph.state import UnderwritingState
-
-from presidio_governance.anonymizer import (
-    presidio_anonymizer_service
-)
-
-from presidio_governance.rehydrator import (
-    presidio_rehydrator_service
-)
-
-from guardrails.schema_validator import (
-    schema_validator
-)
-
-from guardrails.injection_detector import (
-    injection_detector
-)
-
-from guardrails.policy_enforcer import (
-    policy_enforcer
-)
-
+from guardrails.injection_detector import injection_detector
+from guardrails.policy_enforcer import policy_enforcer
+from guardrails.schema_validator import schema_validator
+from presidio_governance.anonymizer import presidio_anonymizer_service
+from presidio_governance.rehydrator import presidio_rehydrator_service
 from utils.logger import logger
 
 

@@ -1,11 +1,11 @@
-from typing import Dict
+
 from utils.logger import logger
 
 
 class PresidioRehydrator:
     """Re-hydrates anonymized session tokens back into real PII values."""
 
-    def rehydrate_text(self, anonymized_text: str, token_map: Dict[str, str]) -> str:
+    def rehydrate_text(self, anonymized_text: str, token_map: dict[str, str]) -> str:
         """
         Replaces anonymized tokens with real PII values for authorized end-user display.
         

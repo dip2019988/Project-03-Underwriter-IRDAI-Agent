@@ -127,6 +127,11 @@ def generate_solution_node(
         {}
     )
 
+    ulip_illustration = state.get(
+        "ulip_illustration",
+        {}
+    )
+
     # --------------------------------------------------
     # Deterministic Risk Category
     # --------------------------------------------------
@@ -147,10 +152,8 @@ def generate_solution_node(
         False
     )
 
-    if (
-        smoker
-        or "smoke" in query_lower
-    ):
+    if smoker:
+        
         risk_category = (
             "PREMIUM_LOADING_REQUIRED"
         )
@@ -254,9 +257,25 @@ Create these sections:
 5. BMI Findings
 6. HLV Findings
 7. Premium Findings
-8. Decision
-9. Mandatory Insurance Disclosures
-10. Conclusion
+
+8. ULIP Illustration
+- Show investment amount
+- Show 4% illustration
+- Show 8% illustration
+- Explain that returns are illustrative only
+
+9. Decision
+
+10. Mandatory Insurance Disclosures
+
+11. Conclusion
+
+IMPORTANT:
+
+If ULIP Illustration data exists,
+you MUST display all values exactly.
+
+Do NOT omit ULIP Illustration.
 """
 
     context = f"""
@@ -288,6 +307,9 @@ HLV Result:
 
 Premium Quote:
 {premium_quote}
+
+ULIP Illustration:
+{ulip_illustration}
 
 Retrieved Documents:
 {retrieved_docs}
@@ -326,6 +348,25 @@ User Query:
             user_input=context
         )
     )
+
+    if ulip_illustration:
+
+        recommendation += f"""
+
+## ULIP Illustration
+
+Investment Amount:
+₹{ulip_illustration.get("investment_amount", 0):,.0f}
+
+4% Illustration:
+₹{ulip_illustration.get("illustration_4_percent", 0):,.0f}
+
+8% Illustration:
+₹{ulip_illustration.get("illustration_8_percent", 0):,.0f}
+
+Important Disclosure:
+{ulip_illustration.get("regulatory_disclosure", "")}
+"""
 
     retry_count = state.get(
         "retry_count",
@@ -438,6 +479,32 @@ User Query:
                     ==
                     "MANDATORY_MEDICAL_TESTS"
                     else []
+                )
+        },
+
+        "ulip_illustration": {
+            "investment_amount":
+                ulip_illustration.get(
+                    "investment_amount",
+                    0
+                ),
+
+            "illustration_4_percent":
+                ulip_illustration.get(
+                    "illustration_4_percent",
+                    0
+                ),
+
+            "illustration_8_percent":
+                ulip_illustration.get(
+                    "illustration_8_percent",
+                    0
+                ),
+
+            "regulatory_disclosure":
+                ulip_illustration.get(
+                    "regulatory_disclosure",
+                    ""
                 )
         },
 

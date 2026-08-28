@@ -1,10 +1,5 @@
-from guardrails.policy_enforcer import (
-    policy_enforcer
-)
-
-from guardrails.injection_detector import (
-    injection_detector
-)
+from guardrails.injection_detector import injection_detector
+from guardrails.policy_enforcer import policy_enforcer
 
 
 def test_guaranteed_returns_blocked():

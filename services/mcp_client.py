@@ -1,6 +1,6 @@
-import requests
+from typing import Any
 
-from typing import Dict, Any
+import requests
 
 from config.settings import settings
 from utils.logger import logger
@@ -35,8 +35,8 @@ class RemoteMCPClient:
         self,
         service_key: str,
         tool_name: str,
-        arguments: dict = None
-    ) -> Dict[str, Any]:
+        arguments: dict | None = None
+    ) -> dict[str, Any]:
 
         if arguments is None:
             arguments = {}
@@ -93,7 +93,7 @@ class RemoteMCPClient:
 
             logger.warning(
                 f"[MCP CLIENT] Service unavailable: "
-                f"{str(e)}"
+                f"{e!s}"
             )
 
             return {

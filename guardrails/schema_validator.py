@@ -1,5 +1,4 @@
 import re
-from typing import Tuple
 
 from utils.logger import logger
 
@@ -33,7 +32,7 @@ class SchemaValidator:
     def validate_input_query(
         self,
         query: str
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
 
         if not query or not query.strip():
             return (
@@ -74,7 +73,7 @@ class SchemaValidator:
     def validate_underwriting_output(
         self,
         result: dict
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
 
         required_fields = [
 

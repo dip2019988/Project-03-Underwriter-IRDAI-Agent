@@ -1,8 +1,6 @@
 from unittest.mock import Mock
 
-from services.memory_service import (
-    Mem0Service
-)
+from services.memory_service import Mem0Service
 
 
 def test_memory_add_and_retrieve():

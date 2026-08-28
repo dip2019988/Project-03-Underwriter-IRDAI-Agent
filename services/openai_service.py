@@ -1,8 +1,10 @@
-from typing import Type, Any, Optional
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+from typing import Any
+
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
+
 from config.settings import settings
 from utils.logger import logger
 
@@ -22,7 +24,7 @@ class OpenAIService:
         self,
         system_prompt: str,
         user_input: str,
-        output_schema: Optional[Type[BaseModel]] = None,
+        output_schema: type[BaseModel] | None = None,
     ) -> Any:
         """Executes a structured or unstructured prompt against the LLM."""
         try:
@@ -39,8 +41,8 @@ class OpenAIService:
 
             return chain.invoke({"input": user_input})
         except Exception as e:
-            logger.error(f"Error executing OpenAI prompt: {str(e)}")
-            raise e
+            logger.error(f"Error executing OpenAI prompt: {e!s}")
+            raise
 
 
 openai_service = OpenAIService()

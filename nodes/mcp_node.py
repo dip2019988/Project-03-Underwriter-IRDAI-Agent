@@ -46,11 +46,17 @@ def mcp_execution_node(
         {}
     )
 
+    contains_ulip_request = state.get(
+        "contains_ulip_request",
+        False
+    )
+
     visited = ["mcp_execution_node"]
 
     bmi_result = {}
     hlv_result = {}
     premium_quote = {}
+    ulip_illustration = {}
 
     execution_logs = []
 
@@ -96,6 +102,37 @@ def mcp_execution_node(
     # --------------------------------------------------
 
     elif intent == "FINANCIAL_UNDERWRITING":
+
+        height_cm = medical_profile.get(
+            "height_cm",
+            0
+        )
+
+        weight_kg = medical_profile.get(
+            "weight_kg",
+            0
+        )
+
+        if height_cm and weight_kg:
+
+            logger.info(
+                "[MCP NODE] Calling BMI Tool..."
+            )
+
+            bmi_result = (
+                mcp_remote_client.call_mcp_service(
+                    service_key="bmi",
+                    tool_name="calculate_bmi",
+                    arguments={
+                        "height_cm": height_cm,
+                        "weight_kg": weight_kg
+                    }
+                )
+            )
+
+            execution_logs.append(
+                "BMI MCP Tool Executed"
+            )
 
         logger.info(
             "[MCP NODE] Calling HLV Tool..."
@@ -164,6 +201,48 @@ def mcp_execution_node(
         execution_logs.append(
             "Premium MCP Tool Executed"
         )
+
+        # ----------------------------------
+        # ULIP Illustration
+        # ----------------------------------
+
+        if contains_ulip_request:
+
+            from nodes.knowledge_node import extract_investment_amount
+
+            investment = (
+                extract_investment_amount(
+                    state.get(
+                        "sanitized_query",
+                        ""
+                    )
+                )
+            )
+
+            if investment > 0:
+
+                ulip_illustration = {
+
+                    "investment_amount":
+                        investment,
+
+                    "illustration_4_percent":
+                        investment * 1.04,
+
+                    "illustration_8_percent":
+                        investment * 1.08,
+
+                    "regulatory_disclosure":
+                        (
+                            "Illustrative only. "
+                            "Market-linked returns "
+                            "are not guaranteed."
+                        )
+                }
+
+                execution_logs.append(
+                    "ULIP Illustration Generated"
+                )    
 
     # --------------------------------------------------
     # LIFESTYLE RISK
@@ -256,6 +335,9 @@ def mcp_execution_node(
 
         "premium_quote":
             premium_quote,
+
+        "ulip_illustration":
+            ulip_illustration,
 
         "visited_nodes":
             visited,

@@ -7,9 +7,8 @@ from rich.table import Table
 
 from config.settings import settings
 from graph.graph_builder import compiled_guarded_graph
-from services.redis_service import redis_service
 from services.memory_service import mem0_service
-
+from services.redis_service import redis_service
 
 console = Console()
 

@@ -1,10 +1,5 @@
-from typing import List
 
-from fastapi import (
-    Depends,
-    HTTPException,
-    status
-)
+from fastapi import Depends, HTTPException, status
 
 from security.auth import get_current_user
 
@@ -15,7 +10,7 @@ class RoleChecker:
     for Insurance Underwriting APIs.
     """
 
-    def __init__(self, allowed_roles: List[str]):
+    def __init__(self, allowed_roles: list[str]):
         self.allowed_roles = allowed_roles
 
     def __call__(

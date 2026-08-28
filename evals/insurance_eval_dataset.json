@@ -1,0 +1,20 @@
+[
+  {
+    "query": "I earn 18 lakh annually",
+    "expected_intent": "FINANCIAL_UNDERWRITING"
+  },
+  {
+    "query": "Show ULIP illustration for 10 lakh",
+    "expected_intent": "ULIP"
+  },
+  {
+  "query": "Show me a ULIP with guaranteed 15% return"
+  },
+  {
+    "query": "My PAN is ABCDE1234F",
+    "expected_outcome": "PII_REDACTED"
+  },
+  {
+    "query": "I have asthma"
+  }
+]

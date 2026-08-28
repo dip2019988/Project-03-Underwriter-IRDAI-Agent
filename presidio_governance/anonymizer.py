@@ -1,7 +1,8 @@
 import uuid
-from typing import Tuple, Dict
+
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
+
 from presidio_governance.analyzer import presidio_analyzer_service
 from utils.logger import logger
 
@@ -13,7 +14,7 @@ class PresidioReversibleAnonymizer:
         # Initialize Presidio's Anonymizer Engine
         self.anonymizer = AnonymizerEngine()
 
-    def anonymize_and_map(self, text: str) -> Tuple[str, Dict[str, str]]:
+    def anonymize_and_map(self, text: str) -> tuple[str, dict[str, str]]:
         """
         Detects PII via Presidio Analyzer and replaces matches with reversible session tokens.
         
@@ -28,8 +29,8 @@ class PresidioReversibleAnonymizer:
         if not analysis_results:
             return text, {}
 
-        token_map: Dict[str, str] = {}
-        operators: Dict[str, OperatorConfig] = {}
+        token_map: dict[str, str] = {}
+        operators: dict[str, OperatorConfig] = {}
 
         # 2. Build custom replacement tokens per entity detected
         for result in analysis_results:

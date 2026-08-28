@@ -34,6 +34,10 @@ def profile_extraction_node(
         "--- [NODE] Profile Extraction ---"
     )
 
+    presidio_token_map = state.get(
+        "presidio_token_map",    {}
+    )
+
     system_prompt = """
 You are an insurance profile extraction engine.
 
@@ -80,8 +84,36 @@ STRICT RULES:
 10. If smoking status is not mentioned:
     return false.
 
-11. If occupation is not mentioned:
-    return empty string.
+11. Occupation means a person's job role.
+
+Examples:
+
+VALID:
+- Doctor
+- Teacher
+- Engineer
+- Commercial Pilot
+- Finance Advisor
+- Lawyer
+
+INVALID:
+- Company Names
+- Employer Names
+- Organisation Names
+
+Examples:
+
+Wrong:
+Occupation = ABC Technologies Pvt Ltd
+
+Correct:
+Occupation = ""
+
+unless the user's actual profession
+is explicitly provided.
+
+If only an employer/company name is mentioned,
+return occupation as empty string.
 
 12. If family history is not mentioned:
     return empty string.
@@ -155,6 +187,34 @@ Return JSON only.
             output_schema=ProfileExtractionSchema
         )
     )
+
+    # ----------------------------------
+    # Recover salary from Presidio token
+    # ----------------------------------
+
+    if extracted.annual_income == 0:
+
+        for token, original_value in (
+            presidio_token_map.items()
+        ):
+
+            if token.startswith(
+                "<ANON_SALARY_AMOUNT"
+            ):
+
+                digits = "".join(
+                    ch
+                    for ch in original_value
+                    if ch.isdigit()
+                )
+
+                if digits:
+
+                    extracted.annual_income = (
+                        int(digits)
+                    )
+
+                    break
 
     customer_profile = {}
 

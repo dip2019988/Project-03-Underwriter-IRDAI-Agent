@@ -1,7 +1,9 @@
-import json
 import hashlib
-from typing import Optional, Dict, Any
+import json
+from typing import Any
+
 import redis
+
 from config.settings import settings
 from utils.logger import logger
 
@@ -23,14 +25,14 @@ class RedisCacheService:
             logger.info("[REDIS] Connected to Redis Cache successfully.")
         except Exception as e:
             self.is_connected = False
-            logger.warning(f"[REDIS] Redis server unavailable ({str(e)}). Proceeding without cache.")
+            logger.warning(f"[REDIS] Redis server unavailable ({e!s}). Proceeding without cache.")
 
     def _generate_key(self, query: str, user_id: str) -> str:
         """Generates a deterministic cache key for a given user query."""
         normalized = f"{user_id}:{query.strip().lower()}"
         return f"cache:underwriting:{hashlib.md5(normalized.encode()).hexdigest()}"
 
-    def get_cached_solution(self, query: str, user_id: str) -> Optional[Dict[str, Any]]:
+    def get_cached_solution(self, query: str, user_id: str) -> dict[str, Any] | None:
         """Retrieves cached underwriting result if available."""
         if not self.is_connected:
             return None
@@ -42,7 +44,7 @@ class RedisCacheService:
                 logger.info(f"[REDIS] Cache HIT for key: {key}")
                 return json.loads(cached_data)
         except Exception as e:
-            logger.error(f"[REDIS] Error reading from cache: {str(e)}")
+            logger.error(f"[REDIS] Error reading from cache: {e!s}")
 
         logger.info("[REDIS] Cache MISS.")
         return None
@@ -51,7 +53,7 @@ class RedisCacheService:
         self,
         query: str,
         user_id: str,
-        payload: Dict[str, Any]
+        payload: dict[str, Any]
     ):
         """Caches successful underwriting recommendations in Redis."""
 
@@ -80,7 +82,7 @@ class RedisCacheService:
         except Exception as e:
 
             logger.error(
-                f"[REDIS] Error writing to cache: {str(e)}"
+                f"[REDIS] Error writing to cache: {e!s}"
             )
 
 

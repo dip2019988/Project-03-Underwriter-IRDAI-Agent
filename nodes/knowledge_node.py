@@ -11,33 +11,49 @@ def extract_investment_amount(
 
     query = query.lower()
 
-    lakh_match = re.search(
-        r'(\d+(?:\.\d+)?)\s*lakhs?',
-        query
-    )
+    patterns = [
 
-    if lakh_match:
+        # 10 lakh investment
+        r'(\d+(?:\.\d+)?)\s*lakhs?\s*investment',
 
-        return (
-            float(
-                lakh_match.group(1)
-            )
-            * 100000
+        # investment of 10 lakh
+        r'investment\s*of\s*(\d+(?:\.\d+)?)\s*lakhs?',
+
+        # invest 10 lakh
+        r'invest(?:ing)?\s*(\d+(?:\.\d+)?)\s*lakhs?',
+
+        # invest 2.5 crore
+        r'invest(?:ing)?\s*(\d+(?:\.\d+)?)\s*crores?',
+
+        # 10 crore investment
+        r'(\d+(?:\.\d+)?)\s*crores?\s*investment',
+
+        # investment of 2 crore
+        r'investment\s*of\s*(\d+(?:\.\d+)?)\s*crores?',
+    ]
+
+    for pattern in patterns:
+
+        match = re.search(
+            pattern,
+            query
         )
 
-    crore_match = re.search(
-        r'(\d+(?:\.\d+)?)\s*crores?',
-        query
-    )
+        if match:
 
-    if crore_match:
-
-        return (
-            float(
-                crore_match.group(1)
+            value = float(
+                match.group(1)
             )
-            * 10000000
-        )
+
+            if "crore" in pattern:
+
+                return (
+                    value * 10000000
+                )
+
+            return (
+                value * 100000
+            )
 
     return 0
 

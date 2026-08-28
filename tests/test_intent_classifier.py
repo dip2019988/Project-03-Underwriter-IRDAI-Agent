@@ -1,9 +1,6 @@
 from unittest.mock import patch
 
-from nodes.classify_node import (
-    classify_intent_node,
-    IntentClassificationSchema
-)
+from nodes.classify_node import IntentClassificationSchema, classify_intent_node
 
 
 @patch(

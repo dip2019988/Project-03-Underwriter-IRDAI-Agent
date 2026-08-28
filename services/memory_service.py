@@ -1,11 +1,10 @@
+import re
 import warnings
-from typing import List
 
 from mem0 import Memory
 
 from config.settings import settings
 from utils.logger import logger
-
 
 warnings.filterwarnings(
     "ignore",
@@ -66,7 +65,7 @@ class Mem0Service:
         except Exception as e:
 
             logger.warning(
-                f"[MEM0] Initialization issue: {str(e)}"
+                f"[MEM0] Initialization issue: {e!s}"
             )
 
             self.memory = None
@@ -74,7 +73,7 @@ class Mem0Service:
     def get_customer_memories(
         self,
         customer_id: str
-    ) -> List[str]:
+    ) -> list[str]:
 
         if not self.memory:
             return []
@@ -117,11 +116,95 @@ class Mem0Service:
 
             logger.error(
                 f"[MEM0] Failed to fetch memories: "
-                f"{str(e)}"
+                f"{e!s}"
             )
 
             return []
 
+    def sanitize_memory_text(
+        self,
+        text: str
+    ) -> str:
+
+        if not text:
+            return text
+
+        # PAN
+        text = re.sub(
+            r"\b[A-Z]{5}[0-9]{4}[A-Z]\b",
+            "<PAN_REDACTED>",
+            text
+        )
+
+        # Aadhaar
+        text = re.sub(
+            r"\b\d{4}[- ]?\d{4}[- ]?\d{4}\b",
+            "<AADHAAR_REDACTED>",
+            text
+        )
+
+        # IFSC
+        text = re.sub(
+            r"\b[A-Z]{4}0[A-Z0-9]{6}\b",
+            "<IFSC_REDACTED>",
+            text
+        )
+
+        # Phone
+        text = re.sub(
+            r"\b\d{10}\b",
+            "<PHONE_REDACTED>",
+            text
+        )
+
+        # Email
+        text = re.sub(
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
+            "<EMAIL_REDACTED>",
+            text
+        )
+
+        # Credit cards
+        text = re.sub(
+            r"\b(?:\d[\s-]?){13,19}\b",
+            "<CARD_REDACTED>",
+            text
+        )
+
+        # Bank account numbers
+        text = re.sub(
+            r"\b(?:\d[\s-]?){11,18}\b",
+            "<BANK_ACCOUNT_REDACTED>",
+            text
+        )
+
+        # Salary values
+        text = re.sub(
+            r"₹\s?[\d,]+(?:\.\d+)?",
+            "<SALARY_REDACTED>",
+            text,
+            flags=re.IGNORECASE
+        )
+
+        # Income expressions
+        text = re.sub(
+            r"\b\d+(?:\.\d+)?\s*(lakh|lakhs|crore|crores)\b",
+            "<INCOME_REDACTED>",
+            text,
+            flags=re.IGNORECASE
+        )
+
+        # Employer references
+        text = re.sub(
+            r"(employer|company|organization)\s*:\s*[^\n]+",
+            "<EMPLOYER_REDACTED>",
+            text,
+            flags=re.IGNORECASE
+        )
+
+        return text
+
+        
     def add_customer_memory(
         self,
         customer_id: str,
@@ -133,8 +216,14 @@ class Mem0Service:
 
         try:
 
+            sanitized_interaction = (
+                self.sanitize_memory_text(
+                    interaction
+                )
+            )
+
             self.memory.add(
-                interaction,
+                sanitized_interaction,
                 user_id=customer_id
             )
 
@@ -145,7 +234,7 @@ class Mem0Service:
         except Exception as e:
 
             logger.error(
-                f"[MEM0] Save failed: {str(e)}"
+                f"[MEM0] Save failed: {e!s}"
             )
 
     def close(self):

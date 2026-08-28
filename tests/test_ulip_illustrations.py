@@ -1,6 +1,21 @@
-from nodes.knowledge_node import (
-    extract_investment_amount
-)
+from nodes.knowledge_node import extract_investment_amount
+
+
+def test_ulip_ignores_income_amount():
+
+    query = (
+        "I earn 20 lakh annually "
+        "and want a ULIP illustration "
+        "for 10 lakh investment"
+    )
+
+    amount = (
+        extract_investment_amount(
+            query
+        )
+    )
+
+    assert amount == 1000000
 
 
 def test_extract_10_lakh():

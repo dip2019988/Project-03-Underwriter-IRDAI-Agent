@@ -1,33 +1,24 @@
 import uuid
 
 import uvicorn
-
-from fastapi import FastAPI, Depends, HTTPException, status
-
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.settings import settings
-
 from data.generate_docs import main as generate_mock_docs
-
 from graph.graph_builder import compiled_guarded_graph
-
-from schemas.api_schemas import Token, UnderwritingRequest, UnderwritingResponse
-
-from security.auth import create_access_token, verify_password, require_advisor_or_underwriter, MOCK_USER_DB
-
-from security.rbac import require_advisor_or_underwriter
-
-from services.redis_service import redis_service
-
-from services.memory_service import mem0_service
-
 from presidio_governance.anonymizer import presidio_anonymizer_service
-
+from schemas.api_schemas import Token, UnderwritingRequest, UnderwritingResponse
+from security.auth import (
+    MOCK_USER_DB,
+    create_access_token,
+    verify_password,
+)
+from security.rbac import require_advisor_or_underwriter
+from services.memory_service import mem0_service
+from services.redis_service import redis_service
 from utils.logger import logger
-
 
 app = FastAPI(
 
@@ -358,7 +349,7 @@ async def evaluate_underwriting(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
 
             detail=
-            f"LangGraph error: {str(e)}"
+            f"LangGraph error: {e!s}"
         )
 
     if (

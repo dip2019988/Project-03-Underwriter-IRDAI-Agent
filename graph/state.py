@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TypedDict, Dict, Any, List, Annotated
 import operator
+from typing import Annotated, Any, TypedDict
 
 
 class UnderwritingState(TypedDict):
@@ -18,35 +18,36 @@ class UnderwritingState(TypedDict):
 
     # Presidio
 
-    presidio_token_map: Dict[str, str]
+    presidio_token_map: dict[str, str]
 
     # Memory
 
-    customer_memory: List[str]
+    customer_memory: list[str]
 
     # Profile
 
-    customer_profile: Dict[str, Any]
-    financial_profile: Dict[str, Any]
-    medical_profile: Dict[str, Any]
-    family_profile: Dict[str, Any]
+    customer_profile: dict[str, Any]
+    financial_profile: dict[str, Any]
+    medical_profile: dict[str, Any]
+    family_profile: dict[str, Any]
 
     # Classification
 
     intent: str
     sub_category: str
+    contains_ulip_request: bool
 
     # RAG
 
-    retrieved_docs: List[Dict[str, Any]]
+    retrieved_docs: list[dict[str, Any]]
 
     # Tool Outputs
 
-    bmi_result: Dict[str, Any]
-    hlv_result: Dict[str, Any]
-    premium_quote: Dict[str, Any]
+    bmi_result: dict[str, Any]
+    hlv_result: dict[str, Any]
+    premium_quote: dict[str, Any]
 
-    ulip_illustration: Dict[str, Any]
+    ulip_illustration: dict[str, Any]
 
     # Risk Assessment
 
@@ -55,14 +56,14 @@ class UnderwritingState(TypedDict):
 
     occupational_risk: str
     family_history_risk: str
-    follow_up_questions: List[str]
+    follow_up_questions: list[str]
 
     # Recommendation
 
     solution: str
     underwriting_recommendation: str
     underwriting_decision: str
-    proposal_json: Dict[str, Any]
+    proposal_json: dict[str, Any]
 
 
     # Guardrails
@@ -85,5 +86,5 @@ class UnderwritingState(TypedDict):
 
     # Tracing
 
-    visited_nodes: Annotated[List[str], operator.add]
-    execution_logs: Annotated[List[str], operator.add]
+    visited_nodes: Annotated[list[str], operator.add]
+    execution_logs: Annotated[list[str], operator.add]

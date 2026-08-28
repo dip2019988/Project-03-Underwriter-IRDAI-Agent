@@ -1,61 +1,23 @@
-from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
 
+from graph.router import evaluate_confidence_route, route_by_intent
 from graph.state import UnderwritingState
-from graph.router import (
-    route_by_intent,
-    evaluate_confidence_route
-)
+from nodes.auth_node import auth_analysis_node
+from nodes.classify_node import classify_intent_node
+from nodes.confidence_node import confidence_check_node
 
 # Import Nodes
-from nodes.guardrail_node import (
-    input_guardrail_node,
-    output_guardrail_node
-)
+from nodes.guardrail_node import input_guardrail_node, output_guardrail_node
+from nodes.human_node import human_approval_node
+from nodes.kb_node import fallback_kb_node
+from nodes.knowledge_node import knowledge_answer_node
+from nodes.mcp_node import mcp_execution_node
+from nodes.medical_followup_node import medical_followup_node
+from nodes.profile_extraction_node import profile_extraction_node
+from nodes.risk_assessment_node import risk_assessment_node
+from nodes.solution_node import generate_solution_node
 
-from nodes.profile_extraction_node import (
-    profile_extraction_node
-)
-
-from nodes.classify_node import (
-    classify_intent_node
-)
-
-from nodes.auth_node import (
-    auth_analysis_node
-)
-
-from nodes.mcp_node import (
-    mcp_execution_node
-)
-
-from nodes.kb_node import (
-    fallback_kb_node
-)
-
-from nodes.knowledge_node import (
-    knowledge_answer_node
-)
-
-from nodes.solution_node import (
-    generate_solution_node
-)
-
-from nodes.confidence_node import (
-    confidence_check_node
-)
-
-from nodes.human_node import (
-    human_approval_node
-)
-
-from nodes.risk_assessment_node import (
-    risk_assessment_node
-)
-
-from nodes.medical_followup_node import (
-    medical_followup_node
-)
 
 def route_guardrail_check(
     state: UnderwritingState

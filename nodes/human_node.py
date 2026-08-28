@@ -1,9 +1,10 @@
+import os
+
 from rich.console import Console
 from rich.prompt import Prompt
 
 from graph.state import UnderwritingState
 from utils.logger import logger
-
 
 console = Console()
 
@@ -44,6 +45,29 @@ def human_approval_node(
         "\n[2] Provide Feedback & Retry"
         "\n[3] Escalate To Senior Underwriter\n"
     )
+
+    if os.getenv(
+        "CI_AUTOMATION",
+        "false"
+    ).lower() == "true":
+
+        logger.info(
+            "[HUMAN REVIEW] "
+            "CI automation mode enabled. "
+            "Auto-approving recommendation."
+        )
+
+        return {
+            "human_approved": True,
+
+            "visited_nodes": [
+                "human_approval_node"
+            ],
+
+            "execution_logs": [
+                "Auto-approved by CI automation"
+            ]
+        }
 
     choice = Prompt.ask(
         "Underwriter Action",

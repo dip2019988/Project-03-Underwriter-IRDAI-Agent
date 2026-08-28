@@ -1,21 +1,12 @@
 from datetime import datetime, timedelta
-from typing import Optional
 
 import jwt
-
-from fastapi import (
-    Depends,
-    HTTPException,
-    status
-)
-
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-
 from passlib.context import CryptContext
 
 from config.settings import settings
 from schemas.api_schemas import TokenData
-
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -64,7 +55,7 @@ def verify_password(
 
 def create_access_token(
     data: dict,
-    expires_delta: Optional[timedelta] = None
+    expires_delta: timedelta | None = None
 ) -> str:
 
     to_encode = data.copy()

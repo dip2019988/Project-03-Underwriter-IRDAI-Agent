@@ -1,8 +1,8 @@
 import json
 import re
 
-from graph.state import UnderwritingState
 from config.settings import settings
+from graph.state import UnderwritingState
 from utils.logger import logger
 
 

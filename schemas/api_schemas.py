@@ -1,4 +1,3 @@
-from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -10,8 +9,8 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: Optional[str] = None
-    role: Optional[str] = None
+    username: str | None = None
+    role: str | None = None
 
 
 class UserLogin(BaseModel):
@@ -57,7 +56,7 @@ class UnderwritingResponse(BaseModel):
 
     guardrail_passed: bool
 
-    guardrail_violation_reason: Optional[str] = None
+    guardrail_violation_reason: str | None = None
 
     sanitized_query: str
 
@@ -65,10 +64,10 @@ class UnderwritingResponse(BaseModel):
 
     confidence_score: int
 
-    risk_category: Optional[str] = None
+    risk_category: str | None = None
 
-    underwriting_recommendation: Optional[str] = None
+    underwriting_recommendation: str | None = None
 
     is_cached_response: bool
 
-    visited_nodes: List[str]
+    visited_nodes: list[str]

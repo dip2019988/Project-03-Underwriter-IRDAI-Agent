@@ -1,4 +1,5 @@
 import re
+
 from utils.logger import logger
 
 
@@ -12,7 +13,7 @@ class PromptInjectionDetector:
             r"you\s+are\s+now\s+a\s+DAN",
             r"system\s*:\s*override",
             r"print\s+(your\s+)?system\s+prompt",
-            r"show\s+me\s+(your\s+)?initial\s+instructions"
+            r"show\s+me\s+(your\s+)?initial\s+instructions",
             r"forget\s+everything\s+you\s+were\s+told",
             r"act\s+as\s+an\s+unfiltered\s+AI",
         ]
