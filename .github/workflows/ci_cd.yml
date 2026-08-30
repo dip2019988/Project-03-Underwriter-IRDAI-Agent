@@ -156,13 +156,22 @@ jobs:
           nohup python mcp_services/hlv_service.py > hlv.log 2>&1 &
           nohup python mcp_services/premium_service.py > premium.log 2>&1 &
 
-          sleep 15
+          sleep 10
+
+          echo "=== BMI LOG ==="
+          cat bmi.log || true
+          
+          echo "=== HLV LOG ==="
+          cat hlv.log || true
+
+          echo "=== PREMIUM LOG ==="
+          cat premium.log || true
 
       - name: Verify MCP Services
         run: |
-          curl http://localhost:8001/docs
-          curl http://localhost:8002/docs
-          curl http://localhost:8003/docs
+          curl http://localhost:8001/health
+          curl http://localhost:8002/health
+          curl http://localhost:8003/health
 
       - name: Run LangSmith Evaluation Runner
         env:
