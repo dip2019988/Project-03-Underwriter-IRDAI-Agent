@@ -150,6 +150,20 @@ jobs:
           pip install -r requirements.txt
           python -m spacy download en_core_web_sm
 
+      - name: Start MCP Services
+        run: |
+          nohup python mcp_services/bmi_service.py > bmi.log 2>&1 &
+          nohup python mcp_services/hlv_service.py > hlv.log 2>&1 &
+          nohup python mcp_services/premium_service.py > premium.log 2>&1 &
+
+          sleep 15
+
+      - name: Verify MCP Services
+        run: |
+          curl http://localhost:8001/docs
+          curl http://localhost:8002/docs
+          curl http://localhost:8003/docs
+
       - name: Run LangSmith Evaluation Runner
         env:
           PYTHONPATH: .
