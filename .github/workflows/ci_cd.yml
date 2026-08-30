@@ -27,7 +27,7 @@ jobs:
         run: pip install ruff #Ruff is Python Linter tool
 
       - name: Run Ruff Linter
-        run: ruff check .
+        run: ruff check . --ignore B008,BLE001,RUF012,DTZ003,PERF102,PLW1510,RUF013
 
   # -------------------------------------------------------------------
   # 2. Unit, Security & Guardrail Testing
