@@ -142,11 +142,6 @@ def generate_solution_node(
         "bmi"
     )
 
-    query_lower = state.get(
-        "sanitized_query",
-        ""
-    ).lower()
-
     smoker = medical_profile.get(
         "smoker",
         False

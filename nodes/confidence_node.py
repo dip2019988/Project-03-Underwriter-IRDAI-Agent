@@ -48,11 +48,6 @@ def confidence_check_node(
         {}
     )
 
-    medical_profile = state.get(
-        "medical_profile",
-        {}
-    )
-
     if customer_profile.get("age"):
         score += 10
         reasoning.append(
