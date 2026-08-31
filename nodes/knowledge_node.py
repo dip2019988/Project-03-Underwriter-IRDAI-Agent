@@ -83,6 +83,18 @@ def knowledge_answer_node(
         []
     )
 
+    source_references = []
+
+    for doc in retrieved_docs:
+
+        source_references.append(
+            (
+                f"{doc.get('id')} | "
+                f"{doc.get('title')}"
+            )
+        )
+
+
     intent = state.get(
         "intent",
         "GENERAL"
@@ -217,6 +229,7 @@ Structure:
 # Key Points
 
 # Important Disclosure (if applicable)
+
 """
 
     context = f"""
@@ -229,6 +242,9 @@ Sub Category:
 Retrieved Documents:
 {retrieved_docs}
 
+Source References:
+{source_references}
+
 ULIP Illustration:
 {ulip_illustration}
 
@@ -240,6 +256,14 @@ User Question:
         system_prompt=system_prompt,
         user_input=context
     )
+
+    if source_references:
+
+        answer += "\n\n# Sources\n\n"
+
+        for source in source_references:
+
+            answer += f"- {source}\n"
 
     logger.info(
         f"[ULIP DEBUG] Returning illustration: "

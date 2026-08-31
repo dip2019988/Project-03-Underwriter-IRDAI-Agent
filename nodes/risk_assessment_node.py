@@ -31,6 +31,15 @@ def risk_assessment_node(
         {}
     )
 
+    # ----------------------------------
+    # Long-Term Memory
+    # ----------------------------------
+
+    customer_memory = state.get(
+        "customer_memory",
+        []
+    )
+
     occupation = (
         customer_profile
         .get(
@@ -48,6 +57,21 @@ def risk_assessment_node(
         )
         .lower()
     )
+
+    # ----------------------------------
+    # Enrich Family History
+    # From Mem0 Long-Term Memory
+    # ----------------------------------
+
+    memory_text = " ".join(
+        customer_memory
+    ).lower()
+
+    if not family_history:
+
+        family_history = (
+            memory_text
+        )
 
     # ----------------------------------
     # Occupational Risk
