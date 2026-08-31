@@ -238,7 +238,36 @@ class Mem0Service:
             )
 
     def close(self):
-        pass
+        """
+        Gracefully close memory resources.
+
+        This helps shut down Mem0/Qdrant
+        before Python interpreter cleanup.
+        """
+
+        if self.memory is None:
+            return
+
+        try:
+
+            # Some Mem0 versions expose
+            # a close() method.
+            if hasattr(
+                self.memory,
+                "close"
+            ):
+
+                self.memory.close()
+
+            logger.info(
+                "[MEM0] Memory service closed."
+            )
+
+        except Exception as e:
+
+            logger.warning(
+                f"[MEM0] Close warning: {e!s}"
+            )
 
 
 mem0_service = Mem0Service()
