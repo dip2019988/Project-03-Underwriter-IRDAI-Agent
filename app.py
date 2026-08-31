@@ -154,7 +154,7 @@ def run_underwriting_workflow(
         config=config
     ):
 
-        for node_name in event.keys():
+        for node_name in event():
 
             console.print(
                 f" ➜ {node_name}"
