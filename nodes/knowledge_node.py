@@ -88,10 +88,10 @@ def knowledge_answer_node(
     for doc in retrieved_docs:
 
         source_references.append(
-            (
+            
                 f"{doc.get('id')} | "
                 f"{doc.get('title')}"
-            )
+            
         )
 
 

@@ -1,17 +1,10 @@
-import json
 
 from pathlib import Path
 
-from langchain_core.documents import Document
-
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 
-from langchain_community.vectorstores import FAISS
-
 from config.settings import settings
-
 from services.document_ingestion_service import document_ingestion_service
 
 
@@ -128,70 +121,78 @@ class InsuranceVectorStore:
                 # IRDAI Compliance Queries
                 # ----------------------------------
 
+                # Boost IRDAI compliance documents
+                # when the query is regulatory.
+
                 if (
-                    "section 45" in query_lower
-                    or "free look" in query_lower
-                    or "irdai" in query_lower
+                    (
+                        "section 45" in query_lower
+                        or "free look" in query_lower
+                        or "irdai" in query_lower
+                    )
+                    and category == "IRDAI_COMPLIANCE"
                 ):
 
-                    if category == "IRDAI_COMPLIANCE":
-
-                        score += 10
+                    score += 10
 
                 # ----------------------------------
                 # ULIP Queries
                 # ----------------------------------
 
-                if "ulip" in query_lower:
+                if (
+                    "ulip" in query_lower
+                    and category == "ULIP"
+                ):
 
-                    if category == "ULIP":
-
-                        score += 10
+                    score += 10
 
                 # ----------------------------------
                 # HLV Queries
                 # ----------------------------------
 
                 if (
+                    (
                     "hlv" in query_lower
                     or "income" in query_lower
                     or "cover" in query_lower
+                    )
+                    and category == "HLV"
                 ):
 
-                    if category == "HLV":
-
-                        score += 10
+                    score += 10
 
                 # ----------------------------------
                 # Medical Queries
                 # ----------------------------------
 
                 if (
+                    (
                     "diabetes" in query_lower
                     or "asthma" in query_lower
                     or "medical" in query_lower
+                    )
+                    and category in (
+                    "MEDICAL_RULES",
+                    "UNDERWRITING_RULES"
+                    )
                 ):
 
-                    if category in (
-                        "MEDICAL_RULES",
-                        "UNDERWRITING_RULES"
-                    ):
-
-                        score += 10
+                    score += 10
 
                 # ----------------------------------
                 # Family History
                 # ----------------------------------
 
                 if (
+                    (
                     "father" in query_lower
                     or "mother" in query_lower
                     or "bypass" in query_lower
+                    )
+                    and category == "FAMILY_HISTORY"
                 ):
 
-                    if category == "FAMILY_HISTORY":
-
-                        score += 10
+                    score += 10
 
                 boosted_results.append(
                     (

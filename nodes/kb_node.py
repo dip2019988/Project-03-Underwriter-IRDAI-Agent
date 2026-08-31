@@ -1,7 +1,5 @@
 from graph.state import UnderwritingState
-
 from services.vector_store_service import insurance_vector_store
-
 from utils.logger import logger
 
 

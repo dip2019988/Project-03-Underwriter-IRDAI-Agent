@@ -1,12 +1,7 @@
 from unittest.mock import patch
 
-from nodes.classify_node import (
-    classify_intent_node
-)
-
-from graph.state import (
-    UnderwritingState
-)
+from graph.state import UnderwritingState
+from nodes.classify_node import classify_intent_node
 
 
 def test_mixed_intent_detection():

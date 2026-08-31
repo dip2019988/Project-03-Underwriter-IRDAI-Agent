@@ -1,6 +1,4 @@
-from nodes.kb_node import (
-    fallback_kb_node
-)
+from nodes.kb_node import fallback_kb_node
 
 
 def test_section_45_rag_retrieval():

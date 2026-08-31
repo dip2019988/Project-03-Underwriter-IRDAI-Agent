@@ -9,9 +9,7 @@ sys.path.append(
     )
 )
 
-from services.vector_store_service import (
-    insurance_vector_store
-)
+from services.vector_store_service import insurance_vector_store
 
 test_queries = [
 

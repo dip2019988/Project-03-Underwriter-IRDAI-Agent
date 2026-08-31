@@ -1,8 +1,5 @@
 from graph.state import UnderwritingState
-
-from nodes.risk_assessment_node import (
-    risk_assessment_node
-)
+from nodes.risk_assessment_node import risk_assessment_node
 
 
 def test_cardiac_family_history():

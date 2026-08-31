@@ -1,6 +1,4 @@
-from nodes.knowledge_node import (
-    extract_investment_amount
-)
+from nodes.knowledge_node import extract_investment_amount
 
 
 def test_ulip_10_lakh_extraction():

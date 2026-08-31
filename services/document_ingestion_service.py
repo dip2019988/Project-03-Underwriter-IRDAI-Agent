@@ -1,16 +1,10 @@
 import json
-
 from pathlib import Path
 
-from pypdf import PdfReader
-
 from docx import Document as DocxDocument
-
 from langchain_core.documents import Document
-
-from langchain_text_splitters import (
-    RecursiveCharacterTextSplitter
-)
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from pypdf import PdfReader
 
 
 class DocumentIngestionService:
